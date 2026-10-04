@@ -1,0 +1,8 @@
+.vs/
+bin/
+obj/
+myshop.Web/appsettings.json
+myshop.Web/bin/Debug/net7.0/appsettings.json
+myshop.Web/wwwroot/Images
+*.bak
+*.pubxml.user
