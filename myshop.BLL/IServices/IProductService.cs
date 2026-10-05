@@ -11,7 +11,7 @@ namespace myshop.BLL.IServices
     {
         public  Task<bool> AddNewProduct(ProductDto obj);
 
-        public  Task<List<ProductDto>> GetAllProducts();
+        public  Task<List<ProductDto>> GetAllProducts(string searchByTitle=null);
 
         public  Task<bool> EditProduct(ProductDto obj);
 

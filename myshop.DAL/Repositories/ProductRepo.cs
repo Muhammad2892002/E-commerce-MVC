@@ -41,8 +41,28 @@ namespace myshop.DAL.Repositories
             }
 
         }
+        public async Task<IEnumerable<Product>> GetAll(string searchByTitle)
+        {
+            try
+            {
+                List<Product> ? allProducts;
+                if (string.IsNullOrEmpty(searchByTitle))
+                {
+                     allProducts = await _context.Products.Include(p => p.Category).ToListAsync();
+                    return allProducts;
+                }
+                 allProducts = await _context.Products.Include(p => p.Category).Where(p=> p.Name.ToUpper().Contains(searchByTitle.ToUpper())).ToListAsync();
+                return allProducts;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message.ToString());
+                throw new Exception(ex.Message.ToString());
 
-      
+            }
+        }
+
+
 
         public async Task<bool> CheckIfProductExist(Product obj)
         {

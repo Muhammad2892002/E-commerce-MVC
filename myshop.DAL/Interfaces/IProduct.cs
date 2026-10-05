@@ -10,5 +10,6 @@ namespace myshop.DAL.Interfaces
     public interface IProduct :IGenericRepository<Product>
     {
         public Task<bool> CheckIfProductExist(Product obj);
+        public  Task<IEnumerable<Product>> GetAll(string searchByTitle = null);
     }
 }

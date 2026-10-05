@@ -50,13 +50,19 @@ namespace myshop.BLL.Services
         
         }
 
-        public async Task<List<ProductDto>> GetAllProducts()
+        public async Task<List<ProductDto>> GetAllProducts(string searchByTitle = null)
         {
             try
             {
 
-                var allProducts = await _unitOfWork.Product.GetAll();
+                IEnumerable<Product> allProducts;
+               
+               
+                    allProducts = await _unitOfWork.Product.GetAll(searchByTitle);
+
+                
                 var allProductsAsDto = (from product in allProducts
+                                        where(searchByTitle == null || product.Name.ToUpper().Contains(searchByTitle.ToUpper()))
                                         select new ProductDto()
                                         {
                                             Id = product.Id,

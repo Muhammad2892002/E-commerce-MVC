@@ -25,16 +25,26 @@ namespace myshop.Web.Controllers
         [Authorize(Policy = "Customer")]
         public async Task<IActionResult> CustomerHome()
         {
+
             TempData["countOfProducts"] = HttpContext.Session.Keys.Count();
 
-            var allProductsDto = await _productService.GetAllProducts();
+            var allProductsDto = await _productService.GetAllProducts(null);
             var allProducts = _mapper.Map<List<ProductVM>>(allProductsDto);
-          
+            var allProductsJson = JsonConvert.SerializeObject(allProducts);
+
 
             return View(allProducts);
 
         }
+        [HttpGet]
+        public async Task<IActionResult> SearchProducts(string? searchByTitle = null)
+        {
+            var allProductsDto = await _productService.GetAllProducts(searchByTitle);
+            var allProducts = _mapper.Map<List<ProductVM>>(allProductsDto);
 
-      
+            return Json(allProducts);
+        }
+
+
     }
 }
