@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using myshop.BLL.IServices;
 using myshop.BLL.Services;
 using myshop.Domain.Models;
+using myshop.Web.ViewModels;
 using Newtonsoft.Json;
 using System.Runtime.CompilerServices;
 
@@ -13,11 +14,13 @@ namespace myshop.Web.Controllers
     {
         private readonly IProductService _productService;
         private readonly IMapper _mapper;
+        private readonly ICategoryService _categoryServices;
 
-        public CustomerController(IProductService productService, IMapper mapper) { 
+        public CustomerController(IProductService productService, IMapper mapper, ICategoryService categoryServices) { 
            
             _productService = productService;
             _mapper = mapper;
+            _categoryServices = categoryServices;
         
         
         }
@@ -30,7 +33,16 @@ namespace myshop.Web.Controllers
 
             var allProductsDto = await _productService.GetAllProducts(null);
             var allProducts = _mapper.Map<List<ProductVM>>(allProductsDto);
-            var allProductsJson = JsonConvert.SerializeObject(allProducts);
+         
+            var allCats = (from cats in await _categoryServices.GetAllcategories()
+                           select new CategoryVM()
+                           {
+                               Id = cats.Id,
+                               Name = cats.Name,
+
+
+                           }).ToList();
+            ViewBag.AllCats = allCats;
 
 
             return View(allProducts);
