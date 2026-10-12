@@ -113,15 +113,19 @@
         <nav aria-label="Page navigation example">
             <ul class="pagination">
                 <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous">
+                    <a id="previous-btn" class="page-link" href="#" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <ul id="paginateByNumber" class="pagination">
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                </ul>
+              
+             
                 <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
+                    <a id="nextPage" class="page-link " href="#" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
@@ -135,9 +139,18 @@
    
 </body>
 <script>
+    let paginateByPageNumber = document.getElementById("paginateByNumber");
     let selectByCategory=document.getElementById("categorySelect");
     let selectFilter = document.getElementById("sortSelect");
+    let nextPage = document.getElementById("nextPage");
+    let previousBtn = document.getElementById("previous-btn");
     let selectedArr;
+    let CurrentPage=1;
+    let productsPerPage=4;
+    let startProductArrayIndex=0;
+    let endProducArraytIndex = productsPerPage;
+
+    console.log(Number);
     console.log(selectedArr);
     if (selectedArr === undefined) {
         selectedArr = @Html.Raw(Json.Serialize(Model));
@@ -145,6 +158,28 @@
     else {
         console.log(selectedArr);
     }
+    let numberOfProducts = selectedArr.length;
+    let totalPageNumber = Math.ceil(numberOfProducts / productsPerPage);
+    RenderPaginateByPage();
+   
+
+    function RenderPaginateByPage(){
+  paginateByPageNumber.innerHTML="";
+        for (let pageNumber=1; pageNumber <= totalPageNumber;pageNumber++){
+            if(CurrentPage==pageNumber){
+                paginateByPageNumber.innerHTML += ` <li class="page-item active"><a class="page-link" href="#">${pageNumber}</a></li>`;
+            }
+            else{
+          
+            paginateByPageNumber.innerHTML += ` <li class="page-item"><a class="page-link" href="#">${pageNumber}</a></li>`;
+            }
+
+        
+        
+        }
+    
+    }
+
 
     selectFilter.addEventListener("change", filterByName);
     function filterByName() {
@@ -244,6 +279,7 @@
     }
 
     function RenderData(objProduct) {
+      
         console.log(objProduct);
         let addCartUrl = '@Url.Action("AddCart", "Cart")';
         ProductsConatiner.insertAdjacentHTML("beforeend", `  <div class="col-md-4 col-sm-6">
@@ -301,6 +337,76 @@ else{
 
     }
 
+    SelectProductsForEveryPage();
+    nextPage.addEventListener("click",function(){
+        CurrentPage++;
+        alert(CurrentPage);
+        SelectProductsForEveryPage();
+
+    })
+    previousBtn.addEventListener("click",function(){
+        CurrentPage--;
+        alert(CurrentPage);
+        SelectProductsForEveryPage();
+
+    })
+    function SelectProductsForEveryPage() {
+        selectedArr = @Html.Raw(Json.Serialize(Model));
+        if (CurrentPage === 1) {
+            startProductArrayIndex=0;
+            endProducArraytIndex=productsPerPage;
+
+            let pageOneProducts = selectedArr.slice(startProductArrayIndex, endProducArraytIndex);
+            selectedArr = pageOneProducts;
+
+            
+        
+        }
+        else if (CurrentPage>1){
+            endProducArraytIndex=productsPerPage*CurrentPage;
+            startProductArrayIndex = endProducArraytIndex - productsPerPage;
+            let pageProducts = selectedArr.slice(startProductArrayIndex, endProducArraytIndex);
+            selectedArr = pageProducts;
+            console.log(selectedArr);
+        
+        }
+        ProductsConatiner.innerHTML = "";
+       
+        if (CurrentPage<totalPageNumber && CurrentPage>1){
+            previousBtn.classList.remove("disabled");
+             nextPage.classList.remove("disabled");
+         
+        RenderPaginateByPage();
+           
+        }
+        else if(CurrentPage>=totalPageNumber){
+            nextPage.classList.add("disabled");
+             previousBtn.classList.remove("disabled");
+            CurrentPage=totalPageNumber;
+            alert(CurrentPage);
+            RenderPaginateByPage();
+          
+
+         
+        
+        }
+        else if(CurrentPage<=1){
+               previousBtn.classList.add("disabled");
+                nextPage.classList.remove("disabled");
+            CurrentPage=1;
+            alert(CurrentPage);
+            RenderPaginateByPage();
+        
+        }
+        selectedArr.forEach(ele => {
+
+            RenderData(ele)
+        });
+
+    
+    
+    
+    }
 
 
 
