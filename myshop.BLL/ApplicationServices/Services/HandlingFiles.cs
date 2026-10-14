@@ -59,6 +59,7 @@ namespace myshop.BLL.ApplicationServices.Services
 
         public string ValidateImg(IFormFile obj)
         {
+           
           var ext=Path.GetExtension(obj.FileName);
             string errMsg = "";
             var isExtensionValid = allowdExtensions.Contains(ext);

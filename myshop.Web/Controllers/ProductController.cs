@@ -198,8 +198,12 @@ namespace myshop.Web.Areas.Admin.Controllers
             TempData["ImgValidtionErrFlag"] = false;
             TempData["ImgValidationMsg"] = "";
             if (ModelState.IsValid)
-            {
-                var ImgValidationResult = _fileService.ValidateImg(file);
+            { 
+                if (file != null)
+                {
+               
+                    var ImgValidationResult = _fileService.ValidateImg(file);
+                
                 if (ImgValidationResult != "")
                 {
                     TempData["ImgValidtionErrFlag"] = true;
@@ -213,8 +217,7 @@ namespace myshop.Web.Areas.Admin.Controllers
 
                 
 
-                if (file != null)
-                {
+               
                
 
                     if (productVM.Img != null)

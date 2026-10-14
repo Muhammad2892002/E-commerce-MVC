@@ -146,12 +146,11 @@
     let previousBtn = document.getElementById("previous-btn");
     let selectedArr;
     let CurrentPage=1;
-    let productsPerPage=4;
+    let productsPerPage=9;
     let startProductArrayIndex=0;
     let endProducArraytIndex = productsPerPage;
 
-    console.log(Number);
-    console.log(selectedArr);
+
     if (selectedArr === undefined) {
         selectedArr = @Html.Raw(Json.Serialize(Model));
     }
@@ -165,18 +164,32 @@
 
     function RenderPaginateByPage(){
   paginateByPageNumber.innerHTML="";
+  let activeResult="";
         for (let pageNumber=1; pageNumber <= totalPageNumber;pageNumber++){
+         
             if(CurrentPage==pageNumber){
-                paginateByPageNumber.innerHTML += ` <li class="page-item active"><a class="page-link" href="#">${pageNumber}</a></li>`;
+               activeResult="active";
             }
             else{
-          
-            paginateByPageNumber.innerHTML += ` <li class="page-item"><a class="page-link" href="#">${pageNumber}</a></li>`;
+                activeResult = "";
             }
+           
+            paginateByPageNumber.insertAdjacentHTML("beforeend", ` <li id="pg-${pageNumber}" class="page-item" value="${pageNumber}"><a class="page-link ${activeResult}" href="#">${pageNumber}</a></li>`);
+            
+            addEventTopaginationBtns(pageNumber);
 
         
         
         }
+    
+    }
+    function addEventTopaginationBtns(pageNum){
+        let btn = document.getElementById(`pg-${pageNum}`);
+        btn.addEventListener("click",function(){
+            CurrentPage=btn.value;
+            SelectProductsForEveryPage();
+        
+        });
     
     }
 
@@ -340,13 +353,13 @@ else{
     SelectProductsForEveryPage();
     nextPage.addEventListener("click",function(){
         CurrentPage++;
-        alert(CurrentPage);
+      
         SelectProductsForEveryPage();
 
     })
     previousBtn.addEventListener("click",function(){
         CurrentPage--;
-        alert(CurrentPage);
+       
         SelectProductsForEveryPage();
 
     })
@@ -383,7 +396,7 @@ else{
             nextPage.classList.add("disabled");
              previousBtn.classList.remove("disabled");
             CurrentPage=totalPageNumber;
-            alert(CurrentPage);
+          
             RenderPaginateByPage();
           
 
@@ -394,7 +407,7 @@ else{
                previousBtn.classList.add("disabled");
                 nextPage.classList.remove("disabled");
             CurrentPage=1;
-            alert(CurrentPage);
+        
             RenderPaginateByPage();
         
         }
